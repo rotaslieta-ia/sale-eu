@@ -5,7 +5,7 @@ compatibility_date = "2026-09-20"
 [[d1_databases]]
 binding = "DB"
 database_name = "sale-eu"
-database_id = "REPLACE_WITH_YOUR_D1_DATABASE_ID"
+database_id = "c5fa73a9-cf5e-4e4b-b225-3e2440b62b27"
 
 [vars]
 # Do not put your admin token here in production.
