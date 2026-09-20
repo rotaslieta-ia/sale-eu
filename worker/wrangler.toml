@@ -1,0 +1,12 @@
+name = "sale-eu-api"
+main = "src/index.js"
+compatibility_date = "2026-09-20"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "sale-eu"
+database_id = "REPLACE_WITH_YOUR_D1_DATABASE_ID"
+
+[vars]
+# Do not put your admin token here in production.
+# Use: wrangler secret put ADMIN_TOKEN

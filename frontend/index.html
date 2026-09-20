@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="lv">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="SALE-EU — labākie piedāvājumi no AliExpress un Amazon vienuviet.">
+  <title>SALE-EU — Labākie piedāvājumi vienuviet</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="topbar container">
+      <a class="brand" href="#" aria-label="SALE-EU sākums">
+        <span class="brand-mark">🛒</span>
+        <span><strong>SALE-EU</strong><small>Labākie piedāvājumi</small></span>
+      </a>
+
+      <form class="search" id="searchForm" role="search">
+        <span>⌕</span>
+        <input id="searchInput" type="search" placeholder="Meklēt preces, kategorijas..." autocomplete="off">
+      </form>
+
+      <div class="header-actions">
+        <button class="icon-btn" id="favoritesBtn" title="Mani favorīti">♡ <span class="desktop-only">Favorīti</span></button>
+        <button class="icon-btn" id="themeBtn" title="Mainīt režīmu">☾</button>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <div class="container nav-inner">
+        <button class="nav-item active" data-filter="all">☰ &nbsp; Kategorijas</button>
+        <button class="nav-item" data-filter="all">Sākums</button>
+        <button class="nav-item" data-filter="deals">🔥 Dienas piedāvājumi</button>
+        <button class="nav-item" data-filter="popular">★ Populārākās preces</button>
+        <button class="nav-item" data-filter="how">ⓘ Kā tas strādā?</button>
+        <button class="nav-item" data-filter="about">Par mums</button>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero container">
+      <div class="hero-copy">
+        <p class="eyebrow">VIENA VIETA — LABĀKI PIEDĀVĀJUMI</p>
+        <h1>Atrodi savas iecienītās preces <span>par labākajām cenām!</span></h1>
+        <p class="hero-text">Mēs apkopojam interesantus piedāvājumus no AliExpress un Amazon, lai tu vari ātri salīdzināt un atrast sev piemērotāko.</p>
+        <div class="hero-actions">
+          <button class="primary" id="heroDeals">⌕ &nbsp; Apskatīt piedāvājumus</button>
+          <button class="secondary" id="heroDaily">🔥 &nbsp; Dienas piedāvājumi</button>
+        </div>
+      </div>
+      <div class="hero-art">
+        <span class="platform">AliExpress</span>
+        <span class="platform amazon">amazon</span>
+        <div class="product-orbit">
+          <div class="hero-product">🎧</div>
+          <div class="hero-product watch">⌚</div>
+          <div class="hero-product game">🎮</div>
+          <div class="hero-product shoe">👟</div>
+        </div>
+        <div class="discount-badge">LĪDZ<br><strong>-70%</strong></div>
+      </div>
+    </section>
+
+    <section class="section container" id="categoriesSection">
+      <div class="section-head">
+        <h2>Populārākās kategorijas</h2>
+        <button class="link-btn" id="allCategories">Skatīt visas kategorijas →</button>
+      </div>
+      <div class="categories" id="categories">
+        <button class="category" data-category="elektronika"><span>💻</span><b>Elektronika</b><small>1 234</small></button>
+        <button class="category" data-category="maja"><span>🏠</span><b>Mājai</b><small>856</small></button>
+        <button class="category" data-category="telefoni"><span>📱</span><b>Telefoni</b><small>643</small></button>
+        <button class="category" data-category="mode"><span>👕</span><b>Mode</b><small>721</small></button>
+        <button class="category" data-category="gaming"><span>🎮</span><b>Gaming</b><small>412</small></button>
+        <button class="category" data-category="auto"><span>🚗</span><b>Auto</b><small>523</small></button>
+        <button class="category" data-category="instrumenti"><span>🛠️</span><b>Instrumenti</b><small>376</small></button>
+        <button class="category" data-category="davanas"><span>🎁</span><b>Dāvanas</b><small>498</small></button>
+      </div>
+    </section>
+
+    <section class="section container" id="productsSection">
+      <div class="section-head">
+        <h2 id="productsTitle">🔥 Ieteiktie piedāvājumi</h2>
+        <button class="link-btn" id="resetFilters">Rādīt visus →</button>
+      </div>
+      <div class="products" id="products"></div>
+      <div class="empty" id="emptyState" hidden>
+        <div>🔎</div>
+        <h3>Nekas netika atrasts</h3>
+        <p>Pamēģini citu meklēšanas vārdu vai kategoriju.</p>
+      </div>
+    </section>
+
+    <section class="trust container">
+      <div><span>🚚</span><b>Ātra piegāde</b><small>Preces no dažādiem pārdevējiem ar piegādi uz Eiropu.</small></div>
+      <div><span>🛡️</span><b>Droši pirkumi</b><small>Tu nonāc pie oficiālā partnera saites.</small></div>
+      <div><span>🐷</span><b>Ietaupi naudu</b><small>Atrodi piedāvājumus un atlaides vienuviet.</small></div>
+      <div><span>🎧</span><b>Atbalsts</b><small>Jautājumi? Sazinies ar mums.</small></div>
+    </section>
+
+    <section class="info container" id="howSection">
+      <div>
+        <p class="eyebrow">KĀ TAS STRĀDĀ?</p>
+        <h2>Vienkārši atrodi, salīdzini un dodies pie pārdevēja.</h2>
+      </div>
+      <ol>
+        <li><b>1.</b><span>Atrodi interesantu preci SALE-EU katalogā.</span></li>
+        <li><b>2.</b><span>Apskati cenu, vērtējumu un platformu.</span></li>
+        <li><b>3.</b><span>Nospied “Apskatīt preci” un turpini pirkumu pie partnera.</span></li>
+      </ol>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a class="brand light" href="#"><span class="brand-mark">🛒</span><span><strong>SALE-EU</strong><small>Labākie piedāvājumi</small></span></a>
+        <p>Neatkarīgs preču un piedāvājumu katalogs.</p>
+      </div>
+      <div><h4>Ātrās saites</h4><a href="#">Sākums</a><a href="#categoriesSection">Kategorijas</a><a href="#productsSection">Piedāvājumi</a><a href="#howSection">Kā tas strādā?</a></div>
+      <div><h4>Informācija</h4><a href="#">Par mums</a><a href="#">Privātuma politika</a><a href="#">Lietošanas noteikumi</a><a href="#">Sazinies ar mums</a></div>
+      <div><h4>Jaunumi</h4><p>Saņem interesantākos piedāvājumus e-pastā.</p><form class="newsletter" id="newsletter"><input type="email" placeholder="Tavs e-pasts" required><button>Pieteikties</button></form></div>
+    </div>
+    <div class="container footer-bottom">
+      <span>© 2026 SALE-EU</span>
+      <span>Affiliate katalogs — cenas un pieejamība var mainīties.</span>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast" role="status"></div>
+  <script src="script.js"></script>
+</body>
+</html>
