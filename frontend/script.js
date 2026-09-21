@@ -1,9 +1,10 @@
+
 /*
   SALE-EU v2 frontend
   Set API_BASE_URL to your deployed Worker URL.
 */
-const API_BASE_URL = "https://YOUR-WORKER.workers.dev";
-
+const API_BASE_URL = "https://sale-eu-api.rotaslieta.workers.dev";
+ 
 const productsEl = document.querySelector("#products");
 const emptyEl = document.querySelector("#emptyState");
 const titleEl = document.querySelector("#productsTitle");
@@ -13,13 +14,13 @@ let products = [];
 let activeCategory = "all";
 let activeFilter = "all";
 const favorites = new Set();
-
+ 
 function showToast(msg){
   toast.textContent = msg;
   toast.classList.add("show");
   setTimeout(()=>toast.classList.remove("show"),2200);
 }
-
+ 
 async function api(path, options = {}) {
   const response = await fetch(`${API_BASE_URL}${path}`, {
     ...options,
@@ -28,7 +29,7 @@ async function api(path, options = {}) {
   if (!response.ok) throw new Error(`API ${response.status}`);
   return response.json();
 }
-
+ 
 function productCard(p){
   return `
     <article class="product">
@@ -46,13 +47,13 @@ function productCard(p){
       </div>
     </article>`;
 }
-
+ 
 function escapeHtml(value){
   return String(value).replace(/[&<>"']/g, ch => ({
     "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
   }[ch]));
 }
-
+ 
 function render(){
   const q = searchInput.value.trim().toLowerCase();
   let list = products.filter(p => {
@@ -62,16 +63,16 @@ function render(){
     const matchesFilter = activeFilter==="deals" ? p.is_deal : activeFilter==="popular" ? p.is_popular : true;
     return matchesCategory && matchesQuery && matchesFilter;
   });
-
+ 
   titleEl.textContent = activeCategory!=="all" ? `📂 ${list[0]?.category_name || "Kategorija"}` :
     activeFilter==="deals" ? "🔥 Dienas piedāvājumi" :
     activeFilter==="popular" ? "★ Populārākās preces" : "🔥 Ieteiktie piedāvājumi";
-
+ 
   productsEl.innerHTML = list.map(productCard).join("");
   emptyEl.hidden = list.length > 0;
   productsEl.hidden = list.length === 0;
 }
-
+ 
 async function loadProducts(){
   try {
     products = await api("/api/products?limit=100");
@@ -84,7 +85,7 @@ async function loadProducts(){
     emptyEl.querySelector("p").textContent = "Pārbaudi API_BASE_URL un Cloudflare Worker konfigurāciju.";
   }
 }
-
+ 
 document.addEventListener("click", async e => {
   const cat = e.target.closest(".category");
   if(cat){
@@ -95,7 +96,7 @@ document.addEventListener("click", async e => {
     render();
     return;
   }
-
+ 
   const nav = e.target.closest(".nav-item");
   if(nav){
     const f = nav.dataset.filter;
@@ -109,7 +110,7 @@ document.addEventListener("click", async e => {
     document.querySelector("#productsSection").scrollIntoView({behavior:"smooth"});
     return;
   }
-
+ 
   const fav = e.target.closest("[data-fav]");
   if(fav){
     const id = Number(fav.dataset.fav);
@@ -118,7 +119,7 @@ document.addEventListener("click", async e => {
     showToast(favorites.has(id) ? "Pievienots favorītiem" : "Noņemts no favorītiem");
     return;
   }
-
+ 
   const prod = e.target.closest("[data-product]");
   if(prod){
     const id = Number(prod.dataset.product);
@@ -126,7 +127,7 @@ document.addEventListener("click", async e => {
     window.open(`${API_BASE_URL}/go/${id}`, "_blank", "noopener,noreferrer");
   }
 });
-
+ 
 searchInput.addEventListener("input",()=>{activeCategory="all";render()});
 document.querySelector("#searchForm").addEventListener("submit",e=>e.preventDefault());
 document.querySelector("#resetFilters").addEventListener("click",()=>{
@@ -154,5 +155,7 @@ document.querySelector("#newsletter").addEventListener("submit",e=>{
   showToast("Paldies! Newsletter servisu pievienosim nākamajā etapā.");
   e.target.reset();
 });
-
+ 
 loadProducts();
+ 
+
