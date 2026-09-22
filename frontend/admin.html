@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="lv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>SALE-EU — Preču pārvaldība</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+  body{background:var(--bg)}
+  .admin-wrap{width:min(1080px,calc(100% - 32px));margin:32px auto 60px}
+  .admin-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:10px}
+  .admin-head h1{font-size:22px;margin:0;letter-spacing:-.5px}
+  .admin-head a{color:var(--blue);text-decoration:none;font-weight:700;font-size:13px}
+
+  .gate{max-width:380px;margin:80px auto;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:28px;box-shadow:var(--shadow)}
+  .gate h2{margin:0 0 6px;font-size:18px}
+  .gate p{color:var(--muted);font-size:13px;margin:0 0 16px}
+  .gate input{width:100%;padding:11px 13px;border:1px solid var(--line);border-radius:9px;font-size:14px;margin-bottom:12px}
+  .gate button{width:100%;background:var(--blue);color:#fff;border:0;border-radius:9px;padding:12px;font-weight:700}
+  .gate .err{color:var(--red);font-size:12px;min-height:16px;margin-top:-4px;margin-bottom:8px}
+
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:22px}
+  .panel h2{margin:0 0 16px;font-size:16px}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .grid .full{grid-column:1/-1}
+  label{display:block;font-size:12px;color:var(--muted);font-weight:600;margin-bottom:4px}
+  input,select,textarea{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:8px;font-size:13px;background:#fff;color:var(--text)}
+  textarea{resize:vertical;min-height:60px}
+  .checks{display:flex;gap:18px;align-items:center}
+  .checks label{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text);font-weight:500}
+  .checks input{width:auto}
+  .form-actions{display:flex;gap:10px;margin-top:16px}
+  .btn{border:0;border-radius:8px;padding:10px 16px;font-weight:700;font-size:13px;cursor:pointer}
+  .btn-primary{background:var(--blue);color:#fff}
+  .btn-ghost{background:transparent;color:var(--text);border:1px solid var(--line)}
+  .msg{font-size:13px;margin-top:10px;min-height:18px}
+  .msg.ok{color:#1a8f4c}
+  .msg.error{color:var(--red)}
+
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:middle}
+  th{color:var(--muted);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.3px}
+  td.name{max-width:220px}
+  .badge{display:inline-block;padding:2px 7px;border-radius:6px;font-size:10px;font-weight:700}
+  .badge.on{background:#e6f4ea;color:#1a8f4c}
+  .badge.off{background:#fdeceb;color:var(--red)}
+  .row-actions{display:flex;gap:6px}
+  .row-actions button{border:0;background:transparent;color:var(--blue);font-weight:700;font-size:12px;cursor:pointer;padding:4px 6px}
+  .row-actions button.danger{color:var(--red)}
+  .table-scroll{overflow-x:auto}
+  .empty-row td{text-align:center;color:var(--muted);padding:24px}
+</style>
+</head>
+<body>
+
+<div id="gate" class="gate">
+  <h2>Administrācija</h2>
+  <p>Ieraksti ADMIN_TOKEN, lai pārvaldītu preces.</p>
+  <input id="tokenInput" type="password" placeholder="Admin token" autocomplete="off">
+  <div class="err" id="gateErr"></div>
+  <button class="btn btn-primary" id="gateBtn">Ieiet</button>
+</div>
+
+<div id="app" class="admin-wrap" hidden>
+  <div class="admin-head">
+    <h1>🛒 SALE-EU — Preču pārvaldība</h1>
+    <div style="display:flex;gap:16px;align-items:center">
+      <a href="index.html">← Uz lapu</a>
+      <a href="#" id="logoutLink">Iziet</a>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2 id="formTitle">Pievienot preci</h2>
+    <form id="productForm">
+      <input type="hidden" id="productId">
+      <div class="grid">
+        <div class="full">
+          <label>Nosaukums *</label>
+          <input id="f_name" required maxlength="200">
+        </div>
+        <div>
+          <label>Kategorija *</label>
+          <select id="f_category" required></select>
+        </div>
+        <div>
+          <label>Platforma *</label>
+          <select id="f_platform" required>
+            <option value="amazon">Amazon</option>
+            <option value="aliexpress">AliExpress</option>
+          </select>
+        </div>
+        <div>
+          <label>Emoji</label>
+          <input id="f_emoji" maxlength="4" placeholder="🛍️">
+        </div>
+        <div>
+          <label>Cena (EUR) *</label>
+          <input id="f_price" type="number" step="0.01" min="0" required>
+        </div>
+        <div>
+          <label>Cena pirms atlaides</label>
+          <input id="f_old_price" type="number" step="0.01" min="0">
+        </div>
+        <div>
+          <label>Atlaide %</label>
+          <input id="f_discount" type="number" step="1" min="0" max="99">
+        </div>
+        <div>
+          <label>Vērtējums (0–5)</label>
+          <input id="f_rating" type="number" step="0.1" min="0" max="5">
+        </div>
+        <div>
+          <label>Atsauksmju skaits</label>
+          <input id="f_reviews" type="number" step="1" min="0">
+        </div>
+        <div class="full">
+          <label>Affiliate saite *</label>
+          <input id="f_url" type="url" required placeholder="https://...">
+        </div>
+        <div class="full">
+          <label>Apraksts</label>
+          <textarea id="f_description" maxlength="2000"></textarea>
+        </div>
+        <div class="full checks">
+          <label><input type="checkbox" id="f_deal"> Dienas piedāvājums</label>
+          <label><input type="checkbox" id="f_popular"> Populāra prece</label>
+          <label><input type="checkbox" id="f_active" checked> Redzama lapā</label>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary" id="saveBtn">Saglabāt preci</button>
+        <button type="button" class="btn btn-ghost" id="cancelEdit" hidden>Atcelt labošanu</button>
+      </div>
+      <div class="msg" id="formMsg"></div>
+    </form>
+  </div>
+
+  <div class="panel">
+    <h2>Visas preces</h2>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>Nosaukums</th><th>Kategorija</th><th>Platforma</th><th>Cena</th>
+            <th>Statuss</th><th>Piedāv.</th><th>Popul.</th><th></th>
+          </tr>
+        </thead>
+        <tbody id="productsBody">
+          <tr class="empty-row"><td colspan="8">Ielādē...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+const API_BASE_URL = "https://sale-eu-api.rotaslieta.workers.dev";
+const TOKEN_KEY = "sale_eu_admin_token";
+
+const gate = document.querySelector("#gate");
+const app = document.querySelector("#app");
+const gateErr = document.querySelector("#gateErr");
+let categories = [];
+let editingId = null;
+
+function getToken(){ return localStorage.getItem(TOKEN_KEY) || ""; }
+
+async function adminApi(path, options = {}){
+  const res = await fetch(`${API_BASE_URL}${path}`, {
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      "X-Admin-Token": getToken(),
+      ...(options.headers || {})
+    }
+  });
+  if (res.status === 401) throw new Error("UNAUTHORIZED");
+  if (!res.ok) throw new Error(`API ${res.status}`);
+  if (res.status === 204) return null;
+  return res.json();
+}
+
+async function tryEnter(token){
+  localStorage.setItem(TOKEN_KEY, token);
+  try {
+    await adminApi("/api/admin/categories");
+    gate.hidden = true;
+    app.hidden = false;
+    await boot();
+  } catch (err) {
+    localStorage.removeItem(TOKEN_KEY);
+    gateErr.textContent = "Nepareizs token vai savienojuma kļūda.";
+  }
+}
+
+document.querySelector("#gateBtn").addEventListener("click", () => {
+  const token = document.querySelector("#tokenInput").value.trim();
+  if (!token) { gateErr.textContent = "Ievadi token."; return; }
+  gateErr.textContent = "";
+  tryEnter(token);
+});
+
+document.querySelector("#logoutLink").addEventListener("click", (e) => {
+  e.preventDefault();
+  localStorage.removeItem(TOKEN_KEY);
+  location.reload();
+});
+
+async function loadCategories(){
+  categories = await adminApi("/api/admin/categories");
+  const sel = document.querySelector("#f_category");
+  sel.innerHTML = categories.map(c => `<option value="${c.id}">${c.icon || ""} ${c.name}</option>`).join("");
+}
+
+function fmtEuro(n){ return `€${Number(n || 0).toFixed(2)}`; }
+
+async function loadProducts(){
+  const body = document.querySelector("#productsBody");
+  body.innerHTML = `<tr class="empty-row"><td colspan="8">Ielādē...</td></tr>`;
+  const products = await adminApi("/api/admin/products");
+
+  if (!products.length){
+    body.innerHTML = `<tr class="empty-row"><td colspan="8">Vēl nav pievienota neviena prece.</td></tr>`;
+    return;
+  }
+
+  body.innerHTML = products.map(p => `
+    <tr data-id="${p.id}">
+      <td class="name">${p.emoji || ""} ${escapeHtml(p.name)}</td>
+      <td>${escapeHtml(p.category_name || "")}</td>
+      <td>${p.platform === "amazon" ? "Amazon" : "AliExpress"}</td>
+      <td>${fmtEuro(p.price)}</td>
+      <td><span class="badge ${p.active ? "on":"off"}">${p.active ? "Redzama":"Paslēpta"}</span></td>
+      <td>${p.is_deal ? "✓" : "—"}</td>
+      <td>${p.is_popular ? "✓" : "—"}</td>
+      <td>
+        <div class="row-actions">
+          <button data-action="edit">Labot</button>
+          <button data-action="toggle">${p.active ? "Paslēpt" : "Rādīt"}</button>
+          <button data-action="delete" class="danger">Dzēst</button>
+        </div>
+      </td>
+    </tr>
+  `).join("");
+
+  body.querySelectorAll("[data-action]").forEach(btn => {
+    btn.addEventListener("click", () => handleRowAction(btn, products));
+  });
+}
+
+function escapeHtml(value){
+  return String(value).replace(/[&<>"']/g, ch => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+  }[ch]));
+}
+
+function handleRowAction(btn, products){
+  const tr = btn.closest("tr");
+  const id = Number(tr.dataset.id);
+  const product = products.find(p => p.id === id);
+  const action = btn.dataset.action;
+
+  if (action === "edit") fillForm(product);
+  if (action === "toggle") toggleActive(product);
+  if (action === "delete") deleteProduct(product);
+}
+
+function fillForm(p){
+  editingId = p.id;
+  document.querySelector("#formTitle").textContent = `Labot preci: ${p.name}`;
+  document.querySelector("#f_name").value = p.name;
+  document.querySelector("#f_category").value = p.category_id;
+  document.querySelector("#f_platform").value = p.platform;
+  document.querySelector("#f_emoji").value = p.emoji || "";
+  document.querySelector("#f_price").value = p.price;
+  document.querySelector("#f_old_price").value = p.old_price || "";
+  document.querySelector("#f_discount").value = p.discount_percent || "";
+  document.querySelector("#f_rating").value = p.rating || "";
+  document.querySelector("#f_reviews").value = p.review_count || "";
+  document.querySelector("#f_url").value = p.affiliate_url;
+  document.querySelector("#f_description").value = p.description || "";
+  document.querySelector("#f_deal").checked = Boolean(p.is_deal);
+  document.querySelector("#f_popular").checked = Boolean(p.is_popular);
+  document.querySelector("#f_active").checked = Boolean(p.active);
+  document.querySelector("#saveBtn").textContent = "Saglabāt izmaiņas";
+  document.querySelector("#cancelEdit").hidden = false;
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+function resetForm(){
+  editingId = null;
+  document.querySelector("#productForm").reset();
+  document.querySelector("#f_active").checked = true;
+  document.querySelector("#formTitle").textContent = "Pievienot preci";
+  document.querySelector("#saveBtn").textContent = "Saglabāt preci";
+  document.querySelector("#cancelEdit").hidden = true;
+}
+
+document.querySelector("#cancelEdit").addEventListener("click", resetForm);
+
+async function toggleActive(p){
+  await adminApi(`/api/admin/products/${p.id}`, {
+    method: "PUT",
+    body: JSON.stringify({ active: p.active ? 0 : 1 })
+  });
+  await loadProducts();
+}
+
+async function deleteProduct(p){
+  if (!confirm(`Dzēst preci "${p.name}"? Šo darbību nevar atsaukt.`)) return;
+  await adminApi(`/api/admin/products/${p.id}`, { method: "DELETE" });
+  await loadProducts();
+}
+
+document.querySelector("#productForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const msg = document.querySelector("#formMsg");
+  msg.textContent = "";
+  msg.className = "msg";
+
+  const payload = {
+    name: document.querySelector("#f_name").value.trim(),
+    category_id: Number(document.querySelector("#f_category").value),
+    platform: document.querySelector("#f_platform").value,
+    emoji: document.querySelector("#f_emoji").value.trim(),
+    price: Number(document.querySelector("#f_price").value),
+    old_price: document.querySelector("#f_old_price").value ? Number(document.querySelector("#f_old_price").value) : null,
+    discount_percent: Number(document.querySelector("#f_discount").value || 0),
+    rating: Number(document.querySelector("#f_rating").value || 0),
+    review_count: Number(document.querySelector("#f_reviews").value || 0),
+    affiliate_url: document.querySelector("#f_url").value.trim(),
+    description: document.querySelector("#f_description").value.trim(),
+    is_deal: document.querySelector("#f_deal").checked,
+    is_popular: document.querySelector("#f_popular").checked,
+    active: document.querySelector("#f_active").checked
+  };
+
+  try {
+    if (editingId){
+      await adminApi(`/api/admin/products/${editingId}`, { method:"PUT", body: JSON.stringify(payload) });
+      msg.textContent = "Izmaiņas saglabātas.";
+    } else {
+      await adminApi("/api/admin/products", { method:"POST", body: JSON.stringify(payload) });
+      msg.textContent = "Prece pievienota.";
+    }
+    msg.classList.add("ok");
+    resetForm();
+    await loadProducts();
+  } catch (err) {
+    msg.textContent = "Neizdevās saglabāt. Pārbaudi laukus un mēģini vēlreiz.";
+    msg.classList.add("error");
+  }
+});
+
+async function boot(){
+  await loadCategories();
+  await loadProducts();
+}
+
+// Auto-login if a token was already saved in this browser.
+if (getToken()) tryEnter(getToken());
+</script>
+</body>
+</html>
